@@ -13,8 +13,6 @@ public class CustomerAccount implements Account {
     private String password;
     private double balance = 0;
     private List<Transaction> transactions = new ArrayList<>();
-    // This will be used to encrypt the password, id and name of the customer for FILE SAVING
-    //private Encryptor encryptor = new Encryptor();
 
     public CustomerAccount(String name, String id, String password){
         this.name = name;

@@ -1,5 +1,6 @@
 package me.border.bankapplication.account;
 
+import me.border.utilities.security.Encryptor;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.HashMap;
@@ -8,6 +9,9 @@ public class AccountsManager {
 
     // String being the account ID and Account being the account
     private static HashMap<String, Account> accountMap = new HashMap<>();
+
+    // THIS WILL BE USED TO ENCRYPT ACCOUNT DETAILS WHEN WRITTEN TO FILE.
+    private static Encryptor accountEncryptor = new Encryptor();
 
     public static boolean login(String id, String password){
         if (accountMap.containsKey(id)){
