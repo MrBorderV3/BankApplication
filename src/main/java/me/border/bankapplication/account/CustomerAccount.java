@@ -104,4 +104,14 @@ public class CustomerAccount implements Account {
     public void addTransaction(Transaction transaction){
         this.transactions.add(transaction);
     }
+
+    @Override
+    public CustomerAccount clone() {
+        try {
+            return (CustomerAccount) super.clone();
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

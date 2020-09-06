@@ -4,7 +4,7 @@ import me.border.bankapplication.transaction.Transaction;
 
 import java.util.List;
 
-public interface Account {
+public interface Account extends Cloneable {
 
     boolean withdraw(double amount);
 
@@ -29,4 +29,6 @@ public interface Account {
     List<Transaction> getTransactions();
 
     void addTransaction(Transaction transaction);
+
+    Account clone();
 }
