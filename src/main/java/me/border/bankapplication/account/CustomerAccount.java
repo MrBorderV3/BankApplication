@@ -14,21 +14,15 @@ public class CustomerAccount implements Account {
     private double balance = 0;
     private List<Transaction> transactions = new ArrayList<>();
 
-    public CustomerAccount(String name, String id, String password){
+    protected CustomerAccount(String name, String id, String password){
         this.name = name;
         this.id = id;
         this.password = password;
     }
 
-    public CustomerAccount(String name, String id, String password, double startingBalance){
+    protected CustomerAccount(String name, String id, String password, double startingBalance){
         this(name, id, password);
         this.balance = startingBalance;
-    }
-
-    // TO DO - START UP ACCOUNTS (SERIALIZE THEM INTO YAMLS THEN TAKE INFO FROM YAMLS ON START UP AND BOOT UP THE ACCOUNTS USING THIS CONSTRUCTOR)
-    private CustomerAccount(String name, String id, String password, double balance, List<Transaction> transactions){
-        this(name, id, password, balance);
-        this.transactions = transactions;
     }
 
     @Override

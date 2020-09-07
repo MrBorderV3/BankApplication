@@ -20,6 +20,16 @@ public class WithdrawTransaction implements Transaction {
         this.prior = after + withdraw;
     }
 
+
+    // FOR EXISTING TRANSACTIONS CONSTRUCTION
+    public WithdrawTransaction(Account account, double withdraw, Date date, double after, double prior){
+        this.account = account;
+        this.withdraw = withdraw;
+        this.date = date;
+        this.after = after;
+        this.prior = prior;
+    }
+
     @Override
     public TransactionType getType() {
         return TransactionType.WITHDRAW;

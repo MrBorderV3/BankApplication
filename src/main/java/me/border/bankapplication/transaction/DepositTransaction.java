@@ -20,6 +20,15 @@ public class DepositTransaction implements Transaction {
         this.prior = after - deposit;
     }
 
+    // FOR EXISTING TRANSACTIONS CONSTRUCTION
+    public DepositTransaction(Account account, double deposit, Date date, double after, double prior){
+        this.account = account;
+        this.deposit = deposit;
+        this.date = date;
+        this.after = after;
+        this.prior = prior;
+    }
+
     @Override
     public TransactionType getType() {
         return TransactionType.DEPOSIT;

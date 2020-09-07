@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class AccountsManager {
 
     // String being the account ID and Account being the account
-    private static HashMap<String, Account> accountMap = new HashMap<>();
+    public static HashMap<String, Account> accountMap = new HashMap<>();
 
     public static boolean login(String id, String password){
         if (!isTaskRunning){

@@ -1,5 +1,6 @@
 package me.border.bankapplication.account;
 
+import me.border.bankapplication.Main;
 import me.border.bankapplication.file.AccountFile;
 import me.border.bankapplication.transaction.ReceiveTransaction;
 import me.border.bankapplication.transaction.SendTransaction;
@@ -14,11 +15,11 @@ public class AccountWriter {
     private Encryptor encryptor;
 
     public AccountWriter(){
-        this.encryptor = new Encryptor();
+        this.encryptor = Main.getEncryptor();
     }
 
     public void writeAccount(Account account){
-        AccountFile accountFile = new AccountFile(account.getID(), new File("/data"));
+        AccountFile accountFile = new AccountFile(account.getID(), new File("/accounts"));
         accountFile.setup();
         accountFile.set("Name", account.getName());
         accountFile.set("ID", account.getID());

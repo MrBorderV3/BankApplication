@@ -22,6 +22,16 @@ public class ReceiveTransaction implements Transaction {
         this.prior = after - received;
     }
 
+    // FOR EXISTING TRANSACTIONS CONSTRUCTION
+    public ReceiveTransaction(Account account, Account sender, double received, Date date, double after, double prior){
+        this.account = account;
+        this.sender = sender;
+        this.received = received;
+        this.date = date;
+        this.after = after;
+        this.prior = prior;
+    }
+
     @Override
     public TransactionType getType() {
         return TransactionType.RECEIVE;
