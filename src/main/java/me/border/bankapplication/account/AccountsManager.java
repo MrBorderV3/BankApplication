@@ -2,23 +2,25 @@ package me.border.bankapplication.account;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class AccountsManager {
 
     // String being the account ID and Account being the account
-    public static HashMap<String, Account> accountMap = new HashMap<>();
+    protected static HashMap<String, Account> accountMap = new HashMap<>();
+    private static List<Account> clonedAccounts = new ArrayList<>();
 
     public static boolean login(String id, String password){
-        if (!isTaskRunning){
-            initWriterTask();
-        }
         if (accountMap.containsKey(id)){
             Account account = accountMap.get(id);
             String accountPassword = account.getPassword();
-            return password.equals(accountPassword);
+            boolean equals = password.equals(accountPassword);
+            if (equals){
+                if (!isTaskRunning){
+                    initWriterTask();
+                }
+            }
+            return equals;
         } else {
             return false;
         }
@@ -39,6 +41,10 @@ public class AccountsManager {
         return account;
     }
 
+    public static Account getAccount(String id){
+        return accountMap.get(id);
+    }
+
     private static boolean isTaskRunning = false;
 
     private static void initWriterTask(){
@@ -47,10 +53,26 @@ public class AccountsManager {
             @Override
             public void run() {
                 AccountWriter accountWriter = new AccountWriter();
-                for (Account account : accountMap.values()){
-                    accountWriter.writeAccount(account);
+                for (Account account : accountMap.values()) {
+                    boolean matchingAccount = false;
+                    ListIterator<Account> iterator = clonedAccounts.listIterator();
+                    while (iterator.hasNext()){
+                        Account clonedAcc = iterator.next();
+                        if (account.getID().equals(clonedAcc.getID())) {
+                            matchingAccount = true;
+                            if (!(account.getTransactions().size() == clonedAcc.getTransactions().size())) {
+                                accountWriter.writeAccount(account);
+                                clonedAccounts.remove(clonedAcc);
+                                clonedAccounts.add(account.clone());
+                            }
+                        }
+                    }
+                    if (!matchingAccount){
+                        accountWriter.writeAccount(account);
+                        clonedAccounts.add(account.clone());
+                    }
                 }
             }
-        }, 30000, 10000);
+        }, 5000, 20000);
     }
 }

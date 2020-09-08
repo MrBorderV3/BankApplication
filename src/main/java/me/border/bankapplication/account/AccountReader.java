@@ -20,7 +20,7 @@ public class AccountReader {
 
     public void readAccount(String id) {
         if (!AccountsManager.accountMap.containsKey(id)) {
-            AccountFile accountFile = new AccountFile(id, new File("/accounts"));
+            AccountFile accountFile = new AccountFile(id, new File("C:\\Users\\בית\\Desktop\\code\\Java\\BankApplication\\accounts"));
             accountFile.setup();
 
             String name = (String) accountFile.get("Name");

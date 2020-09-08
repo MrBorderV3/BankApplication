@@ -19,7 +19,7 @@ public class AccountWriter {
     }
 
     public void writeAccount(Account account){
-        AccountFile accountFile = new AccountFile(account.getID(), new File("/accounts"));
+        AccountFile accountFile = new AccountFile(account.getID(), new File("C:\\Users\\בית\\Desktop\\code\\Java\\BankApplication\\accounts"));
         accountFile.setup();
         accountFile.set("Name", account.getName());
         accountFile.set("ID", account.getID());
@@ -53,9 +53,10 @@ public class AccountWriter {
                 accountFile.set(path + "prior", transaction.getPrior());
                 accountFile.set(path + "after", transaction.getAfter());
             }
-            accountFile.save();
 
             i++;
         }
+
+        accountFile.save();
     }
 }
