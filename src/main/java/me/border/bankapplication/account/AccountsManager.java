@@ -73,6 +73,6 @@ public class AccountsManager {
                     }
                 }
             }
-        }, 5000, 20000);
+        }, 5000, 5000);
     }
 }

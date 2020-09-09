@@ -18,8 +18,9 @@ public interface Account extends Cloneable {
      * Deposit an amount to the account balance
      *
      * @param amount Amount to deposit
+     * @return Success of the action
      */
-    void deposit(double amount);
+    boolean deposit(double amount);
 
     /**
      * Send an amount to a different account

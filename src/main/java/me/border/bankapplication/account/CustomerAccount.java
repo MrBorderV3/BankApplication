@@ -36,9 +36,13 @@ public class CustomerAccount implements Account {
     }
 
     @Override
-    public void deposit(double amount) {
+    public boolean deposit(double amount) {
+        if (amount > 10000) {
+            return false;
+        }
         addToBalance(amount);
         TransactionHandler.handleDeposit(this, amount);
+        return true;
     }
 
     @Override
