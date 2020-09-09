@@ -22,23 +22,20 @@ public class Interface {
         do {
             String scan = optionScanner.next();
             if (scan.length() != 1) {
-                println("Invalid option! Please enter a new option!");
+                handleError("option! Please enter a new option!");
             }
             option = scan.charAt(0);
             switch (option) {
                 case 'a':
                 case 'A':
-                    emptyLn();
-                    printSep();
-                    println("Please enter your account ID");
-                    printSep();
+                    request("enter your account ID");
                     Scanner idScanner = new Scanner(System.in);
                     String id = idScanner.next();
-                    println("Please enter your account Password");
+                    request("enter your account Password");
                     Scanner passwordScanner = new Scanner(System.in);
                     String password = passwordScanner.next();
                     if (id.length() != 6 || password.length() <= 5 || password.contains("\\") || password.contains(" ") || password.contains("%") || password.contains("$")) {
-                        println("Incorrect account id or password");
+                        handleError("ID or password!");
                         displayStartup();
                         break;
                     }
@@ -47,7 +44,7 @@ public class Interface {
                         Account yourAccount = AccountsManager.getAccount(id);
                         showLoginMenu(yourAccount);
                     } else {
-                        println("Incorrect account id or password");
+                        handleError("ID or password!");
                         displayStartup();
                         break;
                     }
@@ -56,24 +53,25 @@ public class Interface {
                 case 'B':
                     printSep();
                     println("We're glad you wish to create an account!");
-                    emptyLn();
-                    println("To start off please type in your full name.");
-                    printSep();
+                    request("type in your full name.");
                     Scanner nameScanner = new Scanner(System.in);
                     String name = nameScanner.nextLine();
-                    nameScanner.close();
                     if (name.length() <= 5 || !name.contains(" ") || name.contains("\\")) {
-                        println("Invalid name!");
+                        handleError("name!");
                         displayStartup();
                         break;
                     }
-                    printSep();
-                    println("Please enter a password of your choice");
+                    if (AccountsManager.nameList.contains(name)){
+                        handleError("name! This name is already registered in our database.");
+                        displayStartup();
+                        break;
+                    }
+                    request("enter a password of your choice");
                     Scanner passwordScanner1 = new Scanner(System.in);
                     String password1 = passwordScanner1.nextLine();
                     passwordScanner1.close();
                     if (password1.length() <= 5 || password1.contains("\\") || password1.contains(" ") || password1.contains("%") || password1.contains("$")) {
-                        println("Invalid password! A password must be more then 6 letters and may not contain illegal characters!");
+                        handleError("password! A password must be more then 6 letters and may not contain illegal characters!");
                         displayStartup();
                         break;
                     }
@@ -83,7 +81,7 @@ public class Interface {
                     break;
                 default:
                     if (option != 'c')
-                        println("Invalid option! Please enter a new option!");
+                        handleError("option! Please enter a new option!");
             }
         } while (option != 'C' && option != 'c');
         println("Thank you for using our services");
@@ -98,7 +96,7 @@ public class Interface {
         do {
             String scan = optionScanner.next();
             if (scan.length() != 1) {
-                println("Invalid option! Please enter a new option!");
+                handleError("option! Please enter a new option.");
             }
             option = scan.charAt(0);
             switch (option) {
@@ -112,22 +110,17 @@ public class Interface {
                     break;
                 case 'b':
                 case 'B':
-                    emptyLn();
-                    printSep();
-                    println("Please select the amount you wish to deposit");
-                    printSep();
+                    request("select the amount you wish to deposit");
                     Scanner depositScanner = new Scanner(System.in);
                     double amount;
                     try {
                         amount = depositScanner.nextDouble();
                     } catch (Exception e) {
-                        println("Invalid amount!");
-                        emptyLn();
+                        handleError("amount!");
                         break;
                     }
                     if (!account.deposit(amount)) {
-                        println("A customer account may not deposit more then $10,000 in one deposit.");
-                        emptyLn();
+                        handleError("amount! A customer account may not deposit more then $10,000 in one deposit.");
                         break;
                     } else {
                         emptyLn();
@@ -138,23 +131,18 @@ public class Interface {
                     break;
                 case 'c':
                 case 'C':
-                    emptyLn();
-                    printSep();
-                    println("Please select the amount you wish to withdraw");
-                    printSep();
+                    request("select the amount you wish to withdraw");
                     Scanner withdrawScanner = new Scanner(System.in);
                     double wAmount;
 
                     try {
                         wAmount = withdrawScanner.nextDouble();
                     } catch (Exception e) {
-                        println("Invalid amount!");
-                        emptyLn();
+                        handleError("amount!");
                         break;
                     }
                     if (!account.withdraw(wAmount)) {
-                        println("You do not have enough balance to withdraw that amount.");
-                        emptyLn();
+                        handleError("amount! You do not have enough balance to withdraw that amount.");
                         break;
                     } else {
                         emptyLn();
@@ -163,9 +151,40 @@ public class Interface {
 
                     emptyLn();
                     break;
+                case 'd':
+                case 'D':
+                    request("enter the ID of the account you wish to send balance to.");
+                    Scanner receiverScanner = new Scanner(System.in);
+                    String receiverId = receiverScanner.next();
+                    if (receiverId.equals(account.getID())) {
+                        handleError("ID! You may not send money to yourself!");
+                        break;
+                    }
+                    Account receiverAccount = AccountsManager.getAccount(receiverId);
+                    if (receiverAccount != null){
+                        Scanner sendAmountScanner = new Scanner(System.in);
+                        double sAmount;
+                        try {
+                            sAmount = sendAmountScanner.nextDouble();
+                        } catch (Exception e){
+                            handleError("amount");
+                            break;
+                        }
+
+                        if (account.send(receiverAccount, sAmount)){
+                            emptyLn();
+                            println("Successfully sent " + receiverId + " $" + sAmount + "!");
+                        } else {
+                            handleError("amount! You do not have enough money in your balance to perform this transaction.");
+                            break;
+                        }
+                    } else {
+                        handleError("ID! Please enter an ID of an existing account.");
+                        break;
+                    }
                 default:
                     if (option != 'G' && option != 'g')
-                        println("Invalid option! Please enter a new option!");
+                        handleError("option! Please enter a different option.");
             }
         } while (option != 'G' && option != 'g');
         println("Thank you for using our services! You will now be logged out of your account");
@@ -193,6 +212,17 @@ public class Interface {
         println("A. Login");
         println("B. Create an account");
         println("C. Exit");
+    }
+
+    private void request(String completion){
+        emptyLn();
+        printSep();
+        println("Please " + completion);
+    }
+
+    private void handleError(String completion){
+        emptyLn();
+        println("Invalid " + completion);
     }
 
     private void emptyLn(){

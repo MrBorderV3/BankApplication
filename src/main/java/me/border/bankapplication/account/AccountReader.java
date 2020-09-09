@@ -27,7 +27,6 @@ public class AccountReader {
             String password = decryptor.decrypt((String) accountFile.get("Password"));
             double balance = (double) accountFile.get("Balance");
             Account account = new CustomerAccount(name, id, password, balance);
-            AccountsManager.accountMap.put(id, account);
 
             for (int i = 1; true; i++) {
                 String path = "Transactions." + i + ".";
@@ -77,6 +76,8 @@ public class AccountReader {
                 } catch (ParseException e){
                     e.printStackTrace();
                 }
+                AccountsManager.nameList.add(account.getName());
+                AccountsManager.accountMap.put(id, account);
             }
         }
     }

@@ -8,6 +8,7 @@ public class AccountsManager {
 
     // String being the account ID and Account being the account
     protected static HashMap<String, Account> accountMap = new HashMap<>();
+    public static List<String> nameList = new ArrayList<>();
     private static List<Account> clonedAccounts = new ArrayList<>();
 
     public static boolean login(String id, String password){
