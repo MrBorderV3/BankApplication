@@ -2,7 +2,10 @@ package me.border.bankapplication;
 
 import me.border.bankapplication.account.Account;
 import me.border.bankapplication.account.AccountsManager;
+import me.border.bankapplication.transaction.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class Interface {
@@ -80,7 +83,7 @@ public class Interface {
                     displayStartup();
                     break;
                 default:
-                    if (option != 'c')
+                    if (option != 'C' && option != 'c')
                         handleError("option! Please enter a new option!");
             }
         } while (option != 'C' && option != 'c');
@@ -182,6 +185,19 @@ public class Interface {
                         handleError("ID! Please enter an ID of an existing account.");
                         break;
                     }
+                case 'e':
+                case 'E':
+                    if (account.getTransactions().isEmpty()){
+                        emptyLn();
+                        println("You do not have any transactions yet!");
+                        break;
+                    }
+                    showTransactionsMenu(account);
+                    break;
+                case 'f':
+                case 'F':
+                    // DISPLAY THE ACCOUNT DETAILS = A
+                    // CHANGE PASSWORD = B
                 default:
                     if (option != 'G' && option != 'g')
                         handleError("option! Please enter a different option.");
@@ -189,6 +205,128 @@ public class Interface {
         } while (option != 'G' && option != 'g');
         println("Thank you for using our services! You will now be logged out of your account");
         showMainMenu();
+    }
+
+    private void showTransactionsMenu(Account account) {
+        char tOption;
+        emptyLn();
+        printSep();
+        println("A. Full Transaction History");
+        println("B. Previous transaction");
+        println("C. Choose A Transaction");
+        println("D. Back");
+
+        Scanner transactionOptionScanner = new Scanner(System.in);
+        do {
+            String transactionScan = transactionOptionScanner.next();
+            if (transactionScan.length() != 1) {
+                handleError("option! Please enter a new option.");
+            }
+            tOption = transactionScan.charAt(0);
+            List<Transaction> transactionHistory = account.getTransactions();
+            switch (tOption) {
+                case 'a':
+                case 'A':
+                    int id = 1;
+                    for (Transaction transaction : transactionHistory) {
+                        printTransaction(transaction, id);
+                        id++;
+                    }
+                    break;
+                case 'b':
+                case 'B':
+                    Transaction latest = transactionHistory.get(transactionHistory.size() - 1);
+                    printTransaction(latest, transactionHistory.size());
+                    break;
+                case 'c':
+                case 'C':
+                    request("enter the ID of the transaction you wish to see.");
+                    Scanner tIdScanner = new Scanner(System.in);
+                    int pickedTid;
+                    try {
+                        pickedTid = tIdScanner.nextInt();
+                    } catch (Exception e) {
+                        handleError("id!");
+                        break;
+                    }
+                    if (transactionHistory.isEmpty()) {
+                        emptyLn();
+                        println("You do not have any transactions yet!");
+                        displayLogin(account);
+                        break;
+                    }
+                    int actualTId = pickedTid - 1;
+                    Transaction picked = transactionHistory.get(actualTId);
+                    if (picked == null) {
+                        handleError("id!");
+                        break;
+                    }
+                    printTransaction(picked, pickedTid);
+                    break;
+                default:
+                    if (tOption != 'D' && tOption != 'd')
+                        handleError("option! Please enter a different option.");
+            }
+        } while (tOption != 'D' && tOption != 'd');
+        println("Heading back to the account menu!");
+        emptyLn();
+        displayLogin(account);
+    }
+
+    private void printTransaction(Transaction transaction, int id){
+        TransactionType type = transaction.getType();
+        String date = transaction.getDate();
+        double prior = transaction.getPrior();
+        double after = transaction.getAfter();
+        double amountTransacted = transaction.getTransactionAmount();
+        switch (type){
+            case SEND:
+                printSep();
+                println("ID: " + id);
+                println("Type: SEND");
+                println("Date: " + date);
+                println("Amount Sent: " + amountTransacted);
+                println("Receiver: " + ((SendTransaction)transaction).getReceiver().getName());
+                println("Prior: " + prior);
+                println("After: " + after);
+                printSep();
+                emptyLn();
+                break;
+            case DEPOSIT:
+                printSep();
+                println("ID: " + id);
+                println("Type: DEPOSIT");
+                println("Date: " + date);
+                println("Amount Deposited: " + amountTransacted);
+                println("Prior: " + prior);
+                println("After: " + after);
+                printSep();
+                emptyLn();
+                break;
+            case WITHDRAW:
+                printSep();
+                println("ID: " + id);
+                println("Type: WITHDRAW");
+                println("Date: " + date);
+                println("Amount Withdrawn: " + amountTransacted);
+                println("Prior: " + prior);
+                println("After: " + after);
+                printSep();
+                emptyLn();
+                break;
+            case RECEIVE:
+                printSep();
+                println("ID: " + id);
+                println("Type: RECEIVE");
+                println("Date: " + date);
+                println("Amount Received: " + amountTransacted);
+                println("Sender: " + ((ReceiveTransaction)transaction).getSender().getName());
+                println("Prior: " + prior);
+                println("After: " + after);
+                printSep();
+                emptyLn();
+                break;
+        }
     }
 
     private void displayLogin(Account account){

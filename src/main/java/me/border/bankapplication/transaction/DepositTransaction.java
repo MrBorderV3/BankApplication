@@ -10,18 +10,18 @@ public class DepositTransaction implements Transaction {
     private double deposit;
     private double prior;
     private double after;
-    private Date date;
+    private String date;
 
     protected DepositTransaction(Account account, double deposit){
         this.account = account;
         this.deposit = deposit;
-        this.date = new Date();
+        this.date = new Date().toString();
         this.after = account.getBalance();
         this.prior = after - deposit;
     }
 
     // FOR EXISTING TRANSACTIONS CONSTRUCTION
-    public DepositTransaction(Account account, double deposit, Date date, double after, double prior){
+    public DepositTransaction(Account account, double deposit, String date, double after, double prior){
         this.account = account;
         this.deposit = deposit;
         this.date = date;
@@ -40,7 +40,7 @@ public class DepositTransaction implements Transaction {
     }
 
     @Override
-    public Date getDate(){
+    public String getDate(){
         return date;
     }
 

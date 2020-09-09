@@ -10,18 +10,18 @@ public class WithdrawTransaction implements Transaction {
     private double withdraw;
     private double prior;
     private double after;
-    private Date date;
+    private String date;
 
     protected WithdrawTransaction(Account account, double withdraw){
         this.account = account;
         this.withdraw = withdraw;
-        this.date = new Date();
+        this.date = new Date().toString();
         this.after = account.getBalance();
         this.prior = after + withdraw;
     }
 
     // FOR EXISTING TRANSACTIONS CONSTRUCTION
-    public WithdrawTransaction(Account account, double withdraw, Date date, double after, double prior){
+    public WithdrawTransaction(Account account, double withdraw, String date, double after, double prior){
         this.account = account;
         this.withdraw = withdraw;
         this.date = date;
@@ -40,7 +40,7 @@ public class WithdrawTransaction implements Transaction {
     }
 
     @Override
-    public Date getDate(){
+    public String getDate(){
         return date;
     }
 

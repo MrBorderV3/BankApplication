@@ -31,18 +31,15 @@ public class AccountReader {
             for (int i = 1; true; i++) {
                 String path = "Transactions." + i + ".";
                 try {
-                    if (accountFile.get(path + "id") == null)
-                        break;
-
                     TransactionType transactionType = TransactionType.valueOf((String) accountFile.get(path + "type"));
 
-                    Date date = DateFormat.getDateInstance().parse((String) accountFile.get(path + "date"));
-                    double amount = (double) accountFile.get(path + "Balance");
-                    double prior = (double) accountFile.get("prior");
-                    double after = (double) accountFile.get("after");
+                    String date = (String) accountFile.get(path + "date");
+                    double amount = (double) accountFile.get(path + "amount");
+                    double prior = (double) accountFile.get(path + "prior");
+                    double after = (double) accountFile.get(path + "after");
 
                     if (transactionType == TransactionType.RECEIVE) {
-                        String senderId = (String) accountFile.get("sender");
+                        String senderId = (String) accountFile.get(path + "sender");
                         if (!AccountsManager.accountMap.containsKey(senderId)) {
                             readAccount(senderId);
                         }
@@ -52,7 +49,7 @@ public class AccountReader {
                         account.addTransaction(transaction);
 
                     } else if (transactionType == TransactionType.SEND) {
-                        String receiverId = (String) accountFile.get("receiver");
+                        String receiverId = (String) accountFile.get(path + "receiver");
                         if (!AccountsManager.accountMap.containsKey(receiverId)) {
                             readAccount(receiverId);
                         }
@@ -73,12 +70,10 @@ public class AccountReader {
                     i++;
                 } catch (NullPointerException e){
                     break;
-                } catch (ParseException e){
-                    e.printStackTrace();
                 }
-                AccountsManager.nameList.add(account.getName());
-                AccountsManager.accountMap.put(id, account);
             }
+            AccountsManager.nameList.add(account.getName());
+            AccountsManager.accountMap.put(id, account);
         }
     }
 }

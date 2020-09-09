@@ -25,7 +25,7 @@ public interface Transaction {
      *
      * @return The date and time of the transaction
      */
-    Date getDate();
+    String getDate();
 
     /**
      * Get the amount transacted in the transaction

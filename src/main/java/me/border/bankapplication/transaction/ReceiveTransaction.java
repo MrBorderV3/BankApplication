@@ -11,19 +11,19 @@ public class ReceiveTransaction implements Transaction {
     private double received;
     private double prior;
     private double after;
-    private Date date;
+    private String date;
 
     protected ReceiveTransaction(Account account, Account sender, double received) {
         this.account = account;
         this.sender = sender;
         this.received = received;
-        this.date = new Date();
+        this.date = new Date().toString();
         this.after = account.getBalance();
         this.prior = after - received;
     }
 
     // FOR EXISTING TRANSACTIONS CONSTRUCTION
-    public ReceiveTransaction(Account account, Account sender, double received, Date date, double after, double prior){
+    public ReceiveTransaction(Account account, Account sender, double received, String date, double after, double prior){
         this.account = account;
         this.sender = sender;
         this.received = received;
@@ -43,7 +43,7 @@ public class ReceiveTransaction implements Transaction {
     }
 
     @Override
-    public Date getDate(){
+    public String getDate(){
         return date;
     }
 

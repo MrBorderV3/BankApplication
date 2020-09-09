@@ -40,7 +40,7 @@ public class AccountWriter {
                 SendTransaction sendTransaction = (SendTransaction) transaction;
                 String path = "Transactions." + i + ".";
                 accountFile.set(path + "type", sendTransaction.getType().toString());
-                accountFile.set(path + "date", sendTransaction.getDate().toString());
+                accountFile.set(path + "date", sendTransaction.getDate());
                 accountFile.set(path + "amount", sendTransaction.getTransactionAmount());
                 accountFile.set(path = "receiver", sendTransaction.getReceiver().getID());
                 accountFile.set(path + "prior", sendTransaction.getPrior());
@@ -48,7 +48,7 @@ public class AccountWriter {
             } else {
                 String path = "Transactions." + i + ".";
                 accountFile.set(path + "type", transaction.getType().toString());
-                accountFile.set(path + "date", transaction.getDate().toString());
+                accountFile.set(path + "date", transaction.getDate());
                 accountFile.set(path + "amount", transaction.getTransactionAmount());
                 accountFile.set(path + "prior", transaction.getPrior());
                 accountFile.set(path + "after", transaction.getAfter());
