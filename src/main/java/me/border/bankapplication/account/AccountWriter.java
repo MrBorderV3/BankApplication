@@ -25,15 +25,16 @@ public class AccountWriter {
         accountFile.set("ID", account.getID());
         accountFile.set("Password", encryptor.encrypt(account.getPassword()));
         accountFile.set("Balance", account.getBalance());
-        int i = 1;
-        for (Transaction transaction : account.getTransactions()){
+        int size = account.getTransactions().size();
+        for (int i = 1; i <= size; i++){
+            Transaction transaction = account.getTransactions().get(i-1);
             if (transaction.getType() == TransactionType.RECEIVE){
                 ReceiveTransaction receiveTransaction = (ReceiveTransaction) transaction;
                 String path = "Transactions." + i + ".";
                 accountFile.set(path + "type", receiveTransaction.getType().toString());
                 accountFile.set(path + "date", receiveTransaction.getDate());
                 accountFile.set(path + "amount", receiveTransaction.getTransactionAmount());
-                accountFile.set(path = "sender", receiveTransaction.getSender().getID());
+                accountFile.set(path + "sender", receiveTransaction.getSender().getID());
                 accountFile.set(path + "prior", receiveTransaction.getPrior());
                 accountFile.set(path + "after", receiveTransaction.getAfter());
             } else if (transaction.getType() == TransactionType.SEND){
@@ -53,8 +54,6 @@ public class AccountWriter {
                 accountFile.set(path + "prior", transaction.getPrior());
                 accountFile.set(path + "after", transaction.getAfter());
             }
-
-            i++;
         }
 
         accountFile.save();

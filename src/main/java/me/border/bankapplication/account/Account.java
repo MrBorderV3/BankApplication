@@ -95,9 +95,10 @@ public interface Account extends Cloneable {
     void addTransaction(Transaction transaction);
 
     /**
-     * Clone this account
+     * Get an account transaction comparator for this account
      *
-     * @return The cloned account
+     * @return The comparator
+     * @see AccountComparator
      */
-    Account clone();
+    AccountComparator getComparator();
 }

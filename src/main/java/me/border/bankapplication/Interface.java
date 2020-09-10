@@ -4,7 +4,6 @@ import me.border.bankapplication.account.Account;
 import me.border.bankapplication.account.AccountsManager;
 import me.border.bankapplication.transaction.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -72,7 +71,6 @@ public class Interface {
                     request("enter a password of your choice");
                     Scanner passwordScanner1 = new Scanner(System.in);
                     String password1 = passwordScanner1.nextLine();
-                    passwordScanner1.close();
                     if (password1.length() <= 5 || password1.contains("\\") || password1.contains(" ") || password1.contains("%") || password1.contains("$")) {
                         handleError("password! A password must be more then 6 letters and may not contain illegal characters!");
                         displayStartup();
@@ -166,6 +164,7 @@ public class Interface {
                     Account receiverAccount = AccountsManager.getAccount(receiverId);
                     if (receiverAccount != null){
                         Scanner sendAmountScanner = new Scanner(System.in);
+                        request("enter the amount of money you'd like to send to " + receiverAccount.getName());
                         double sAmount;
                         try {
                             sAmount = sendAmountScanner.nextDouble();
@@ -185,6 +184,7 @@ public class Interface {
                         handleError("ID! Please enter an ID of an existing account.");
                         break;
                     }
+                    break;
                 case 'e':
                 case 'E':
                     if (account.getTransactions().isEmpty()){
@@ -196,8 +196,15 @@ public class Interface {
                     break;
                 case 'f':
                 case 'F':
-                    // DISPLAY THE ACCOUNT DETAILS = A
-                    // CHANGE PASSWORD = B
+                    emptyLn();
+                    printSep();
+                    println("Name: " + account.getName());
+                    println("ID: " + account.getID());
+                    println("Balance: " + account.getBalance());
+                    println("Amount of Transactions: " + account.getTransactions().size());
+                    printSep();
+                    emptyLn();
+                    break;
                 default:
                     if (option != 'G' && option != 'g')
                         handleError("option! Please enter a different option.");
@@ -273,7 +280,7 @@ public class Interface {
         displayLogin(account);
     }
 
-    private void printTransaction(Transaction transaction, int id){
+    public void printTransaction(Transaction transaction, int id){
         TransactionType type = transaction.getType();
         String date = transaction.getDate();
         double prior = transaction.getPrior();
@@ -338,7 +345,7 @@ public class Interface {
         println("C. Withdraw");
         println("D. Send");
         println("E. Transaction History");
-        println("F. Settings");
+        println("F. Account Details");
         println("G. Logout");
     }
 

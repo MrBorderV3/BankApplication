@@ -25,6 +25,11 @@ public class CustomerAccount implements Account {
         this.balance = startingBalance;
     }
 
+    protected CustomerAccount(String name, String id, String password, double startingBalance, List<Transaction> transactions){
+        this(name, id, password, startingBalance);
+        this.transactions = transactions;
+    }
+
     @Override
     public boolean withdraw(double amount){
         if (getBalance() < amount){
@@ -104,12 +109,8 @@ public class CustomerAccount implements Account {
     }
 
     @Override
-    public CustomerAccount clone() {
-        try {
-            return (CustomerAccount) super.clone();
-        } catch (CloneNotSupportedException e){
-            e.printStackTrace();
-            return null;
-        }
+    public AccountComparator getComparator() {
+        return new AccountComparator(this);
     }
+
 }
