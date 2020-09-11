@@ -1,7 +1,6 @@
 package me.border.bankapplication.account;
 
-import me.border.bankapplication.Interface;
-import me.border.bankapplication.transaction.Transaction;
+import me.border.bankapplication.LoginResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;
@@ -13,7 +12,11 @@ public class AccountsManager {
     public static List<String> nameList = new ArrayList<>();
     private static List<AccountComparator> comparators = new ArrayList<>();
 
-    public static boolean login(String id, String password){
+    public static LoginResponse login(String id, String password){
+        if (id.length() != 6 || password.length() <= 5 || password.contains("\\") || password.contains(" ") || password.contains("%") || password.contains("$")) {
+            return new LoginResponse(false);
+        }
+
         if (accountMap.containsKey(id)){
             Account account = accountMap.get(id);
             String accountPassword = account.getPassword();
@@ -23,9 +26,10 @@ public class AccountsManager {
                     initWriterTask();
                 }
             }
-            return equals;
+
+            return new LoginResponse(equals, account);
         } else {
-            return false;
+            return new LoginResponse(false);
         }
     }
 
@@ -40,6 +44,7 @@ public class AccountsManager {
         }
         Account account = new CustomerAccount(name, id, password);
         accountMap.put(id, account);
+        nameList.add(name);
 
         return account;
     }
@@ -84,5 +89,13 @@ public class AccountsManager {
                 }
             }
         }, 5000, 5000);
+    }
+
+    public static boolean credentialsCheck(String name, String password){
+        if (password.length() <= 5 || password.contains("\\") || password.contains(" ") || password.contains("%") || password.contains("$")) {
+            return false;
+        }
+
+        return !nameList.contains(name) &&name.length() > 3 && name.contains(" ") && !name.contains("\\");
     }
 }

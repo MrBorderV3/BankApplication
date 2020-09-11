@@ -1,8 +1,8 @@
 package me.border.bankapplication;
 
 import me.border.bankapplication.account.AccountReader;
-import me.border.bankapplication.account.AccountsManager;
 import me.border.bankapplication.file.SerializedKeyFile;
+import me.border.bankapplication.ui.Interface;
 import me.border.utilities.security.Encryptor;
 
 import java.io.File;
@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         startReader();
-        inf.start();
+        inf.start(args);
     }
 
     private static void startReader(){
