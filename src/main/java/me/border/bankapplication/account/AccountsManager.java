@@ -1,6 +1,6 @@
 package me.border.bankapplication.account;
 
-import me.border.bankapplication.LoginResponse;
+import me.border.bankapplication.utils.LoginResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;

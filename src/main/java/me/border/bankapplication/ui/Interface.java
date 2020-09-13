@@ -1,6 +1,7 @@
 package me.border.bankapplication.ui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,7 +10,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import me.border.bankapplication.LoginResponse;
+import me.border.bankapplication.ui.components.ButtonBuilder;
+import me.border.bankapplication.utils.LoginResponse;
 import me.border.bankapplication.account.Account;
 import me.border.bankapplication.account.AccountsManager;
 import me.border.bankapplication.ui.components.AlertBox;
@@ -18,7 +20,6 @@ import me.border.bankapplication.ui.components.ConfirmBox;
 public class Interface extends Application {
 
     private Stage window;
-
     private Scene mainScene;
 
     public Interface() {}
@@ -31,13 +32,25 @@ public class Interface extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.window = primaryStage;
-        setMainScene();
-        window.setTitle("Bank App");
-        window.setScene(mainScene);
-        window.show();
+        openMainMenu();
     }
 
-    private void setMainScene() {
+
+    private void openMainMenu() {
+        window.setTitle("Bank App");
+        // Show a confirmation when the user clicks the (X) button
+        window.setOnCloseRequest(e -> {
+            ConfirmBox confirmBox = new ConfirmBox("Exit Confirmation", "Are you sure you wish to close the application?");
+            boolean answer = confirmBox.show();
+            // If they click no, the application will not close and the event will be consumed.
+            if (!answer) {
+                e.consume();
+            } else {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+
         Label label = new Label("Welcome Customer!");
 
         Button createButton = new Button("Create an account");
@@ -48,7 +61,7 @@ public class Interface extends Application {
 
         Button exitButton = new Button("Exit");
         exitButton.setOnAction(e -> {
-            ConfirmBox confirmBox = new  ConfirmBox("Exit Confirmation", "Are you sure you wish to close the application?");
+            ConfirmBox confirmBox = new ConfirmBox("Exit Confirmation", "Are you sure you wish to close the application?");
             boolean answer = confirmBox.show();
             if (answer)
                 window.close();
@@ -61,14 +74,15 @@ public class Interface extends Application {
         grid.setHgap(10);
 
         GridPane.setConstraints(label, 0, 0);
-        GridPane.setConstraints(loginButton, 0, 2);
-        GridPane.setConstraints(createButton, 0, 4);
-        GridPane.setConstraints(exitButton, 0, 6);
+        GridPane.setConstraints(createButton, 0, 2);
+        GridPane.setConstraints(loginButton, 0, 4);
+        GridPane.setConstraints(exitButton, 0, 7);
 
         grid.getChildren().addAll(label, createButton, loginButton, exitButton);
 
         this.mainScene = new Scene(grid, 250, 170);
-        window.setScene(this.mainScene);
+        window.setScene(mainScene);
+        window.show();
     }
 
     private void openCreateScene(){
@@ -287,7 +301,7 @@ public class Interface extends Application {
             String password = passwordInput.getText();
             LoginResponse loginResponse = AccountsManager.login(id, password);
             if (loginResponse.getAnswer()){
-                Account account = loginResponse.getVault();
+                Account account = loginResponse.getContext();
                 openAccountScene(account);
             } else {
                 new AlertBox("Invalid Credentials", "Your password or name are incorrect!").show();
@@ -337,7 +351,7 @@ public class Interface extends Application {
             String inputPassword = passwordInput.getText();
             LoginResponse loginResponse = AccountsManager.login(inputId, inputPassword);
             if (loginResponse.getAnswer()){
-                Account account = loginResponse.getVault();
+                Account account = loginResponse.getContext();
                 openAccountScene(account);
             } else {
                 new AlertBox("Invalid Credentials", "Your password or name are incorrect!").show();
@@ -386,7 +400,7 @@ public class Interface extends Application {
             String inputPassword = passwordInput.getText();
             LoginResponse loginResponse = AccountsManager.login(inputId, inputPassword);
             if (loginResponse.getAnswer()){
-                Account account = loginResponse.getVault();
+                Account account = loginResponse.getContext();
                 openAccountScene(account);
             } else {
                 new AlertBox("Invalid Credentials", "Your password or name are incorrect!").show();
@@ -399,15 +413,127 @@ public class Interface extends Application {
         window.setScene(scene);
     }
 
-    private void openAccountScene(Account account){
+    private void openAccountScene(Account account) {
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setVgap(12);
+        grid.setHgap(10);
 
+        Button balanceBut = new ButtonBuilder("My Balance", e -> openBalanceScene(account), 0, 0).buildGrid();
+        Button logoutBut = new ButtonBuilder("Log Out", e -> openMainMenu(), 0, 7).buildGrid();
+        Button depositButton = new ButtonBuilder("Deposit", e -> openDepositMenu(account), 0, 1).buildGrid();
+        Button withdrawButton = new ButtonBuilder("Withdraw", e -> openWithdrawMenu(account), 0, 2).buildGrid();
+
+        grid.getChildren().addAll(balanceBut, depositButton, withdrawButton, logoutBut);
+
+        Scene scene = new Scene(grid, 300, 200);
+
+        window.setScene(scene);
+    }
+
+    private void openWithdrawMenu(Account account){
+        GridPane grid = getBaseActionGrid();
+
+        Label label = new Label("Withdraw Amount:");
+        GridPane.setConstraints(label, 0, 0);
+        TextField amount = new TextField();
+        GridPane.setConstraints(amount, 2, 0);
+
+        Button withdrawButton = new ButtonBuilder("Withdraw", e -> {
+            try {
+                double dAmount = Double.parseDouble(amount.getText());
+                ConfirmBox confirmBox = new ConfirmBox("Withdraw Confirmation", "Are you sure you want to withdraw $" + dAmount + " to your account?");
+                if (confirmBox.show()) {
+                    if (account.withdraw(dAmount)) {
+                        new AlertBox("Success", "You have successfully withdrawn $" + dAmount + " from your account").show();
+                        openAccountScene(account);
+                    } else {
+                        new AlertBox("Invalid Amount", "You do not have enough balance to withdraw this amount.").show();
+                    }
+                }
+            } catch (NumberFormatException ex){
+                new AlertBox("Invalid Number", "Invalid number! Please try again.").show();
+            }
+        }, 2, 3).buildGrid();
+
+        Button backButton = createAccountBackButton(account);
+        GridPane.setConstraints(backButton, 0, 3);
+
+        grid.getChildren().addAll(label, amount, withdrawButton, backButton);
+
+        Scene scene = new Scene(grid, 310, 90);
+        window.setScene(scene);
+    }
+
+    private void openDepositMenu(Account account){
+        GridPane grid = getBaseActionGrid();
+
+        Label label = new Label("Deposit Amount:");
+        GridPane.setConstraints(label, 0, 0);
+        TextField amount = new TextField();
+        GridPane.setConstraints(amount, 2, 0);
+
+        Button depositButton = new ButtonBuilder("Deposit", e -> {
+            try {
+                double dAmount = Double.parseDouble(amount.getText());
+                ConfirmBox confirmBox = new ConfirmBox("Deposit Confirmation", "Are you sure you want to deposit $" + dAmount + " to your account?");
+                if (confirmBox.show()) {
+                    if (account.deposit(dAmount)) {
+                        new AlertBox("Success", "You have successfully deposited $" + dAmount + " to your account").show();
+                        openAccountScene(account);
+                    } else {
+                        new AlertBox("Invalid Amount", "You cannot deposit this amount! please try again.").show();
+                    }
+                }
+            } catch (NumberFormatException ex){
+                new AlertBox("Invalid Number", "Invalid number! Please try again.").show();
+            }
+        }, 2, 3).buildGrid();
+
+        Button backButton = createAccountBackButton(account);
+        GridPane.setConstraints(backButton, 0, 3);
+
+        grid.getChildren().addAll(label, amount, depositButton, backButton);
+
+        Scene scene = new Scene(grid, 280, 90);
+        window.setScene(scene);
+    }
+
+    private void openBalanceScene(Account account){
+        double balance = account.getBalance();
+        GridPane grid = getBaseActionGrid();
+
+        Label label = new Label("Your Balance: $" + balance);
+        GridPane.setConstraints(label, 1, 2);
+
+        Button backButton = createBackButton(() -> openAccountScene(account));
+        GridPane.setConstraints(backButton, 0, 3);
+        grid.getChildren().addAll(label, backButton);
+
+
+        Scene scene = new Scene(grid, 225, 80);
+        window.setScene(scene);
+    }
+
+    private GridPane getBaseActionGrid(){
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setHgap(6);
+        grid.setVgap(8);
+
+        return grid;
     }
 
     private Button createBackButton(Scene scene){
-        Button button = new Button("Back");
-        button.setOnAction(e -> window.setScene(scene));
+        return new ButtonBuilder("Back", e -> window.setScene(scene)).build();
+    }
 
-        return button;
+    private Button createBackButton(Runnable runnable){
+        return new ButtonBuilder("Back", e -> runnable.run()).build();
+    }
+
+    private Button createAccountBackButton(Account account){
+        return createBackButton(() -> openAccountScene(account));
     }
 
     /*private void showLoginMenu(Account account) {
