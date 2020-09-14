@@ -11,12 +11,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import me.border.bankapplication.transaction.*;
-import me.border.bankapplication.ui.components.ButtonBuilder;
+import me.border.utilities.ui.ButtonBuilder;
 import me.border.bankapplication.account.Account;
 import me.border.bankapplication.account.AccountsManager;
-import me.border.bankapplication.ui.components.AlertBox;
-import me.border.bankapplication.ui.components.ConfirmBox;
-import me.border.bankapplication.ui.components.FieldBox;
+import me.border.utilities.ui.AlertBox;
+import me.border.utilities.ui.ConfirmBox;
+import me.border.utilities.ui.FieldBox;
 import me.border.utilities.utils.ImmuteableResponse;
 
 public class Interface extends Application {
