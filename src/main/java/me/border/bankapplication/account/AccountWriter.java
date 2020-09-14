@@ -34,7 +34,7 @@ public class AccountWriter {
                 accountFile.set(path + "type", receiveTransaction.getType().toString());
                 accountFile.set(path + "date", receiveTransaction.getDate());
                 accountFile.set(path + "amount", receiveTransaction.getTransactionAmount());
-                accountFile.set(path + "sender", receiveTransaction.getSender().getID());
+                accountFile.set(path + "sender", receiveTransaction.getParty().getID());
                 accountFile.set(path + "prior", receiveTransaction.getPrior());
                 accountFile.set(path + "after", receiveTransaction.getAfter());
             } else if (transaction.getType() == TransactionType.SEND){
@@ -43,7 +43,7 @@ public class AccountWriter {
                 accountFile.set(path + "type", sendTransaction.getType().toString());
                 accountFile.set(path + "date", sendTransaction.getDate());
                 accountFile.set(path + "amount", sendTransaction.getTransactionAmount());
-                accountFile.set(path = "receiver", sendTransaction.getReceiver().getID());
+                accountFile.set(path + "receiver", sendTransaction.getParty().getID());
                 accountFile.set(path + "prior", sendTransaction.getPrior());
                 accountFile.set(path + "after", sendTransaction.getAfter());
             } else {

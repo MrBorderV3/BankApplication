@@ -5,7 +5,7 @@ public class AccountComparator {
     private Account account;
     private int size;
 
-    public AccountComparator(Account account){
+    protected AccountComparator(Account account){
         this.account = account;
         this.size = account.getTransactions().size();
     }

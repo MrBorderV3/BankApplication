@@ -4,7 +4,7 @@ import me.border.bankapplication.account.Account;
 
 import java.util.Date;
 
-public class SendTransaction implements Transaction {
+public class SendTransaction implements TWTransaction {
 
     private Account account;
     private Account receiver;
@@ -62,7 +62,8 @@ public class SendTransaction implements Transaction {
         return after;
     }
 
-    public Account getReceiver(){
+    @Override
+    public Account getParty(){
         return receiver;
     }
 }

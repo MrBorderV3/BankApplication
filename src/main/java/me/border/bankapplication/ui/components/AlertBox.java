@@ -5,18 +5,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-public class AlertBox {
-
-    private Stage window;
+public class AlertBox extends Box<Void> {
 
     public AlertBox(String title, String description){
-        window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle(title);
-        window.setMinWidth(300);
+        super(title);
         Label label = new Label(description);
 
         Button button = new Button("OK");
@@ -28,9 +21,5 @@ public class AlertBox {
         layout.setAlignment(Pos.CENTER);
         Scene scene = new Scene(layout);
         window.setScene(scene);
-    }
-
-    public void show(){
-        window.showAndWait();
     }
 }

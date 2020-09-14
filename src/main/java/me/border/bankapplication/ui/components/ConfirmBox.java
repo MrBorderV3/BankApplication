@@ -5,30 +5,22 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-public class ConfirmBox {
-
-    private boolean answer;
-    private Stage window;
+public class ConfirmBox extends Box<Boolean> {
 
     public ConfirmBox(String title, String description){
-        window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle(title);
-        window.setMinWidth(300);
+        super(title);
 
         Button yesButton = new Button("Yes");
         Button noButton = new Button("No");
 
         yesButton.setOnAction(e -> {
-            answer = true;
+            var = true;
             window.close();
         });
 
         noButton.setOnAction(e -> {
-            answer = false;
+            var = false;
             window.close();
         });
 
@@ -44,14 +36,14 @@ public class ConfirmBox {
         borderPane.setTop(label);
         borderPane.setCenter(layout);
 
-
         Scene scene = new Scene(borderPane);
         window.setScene(scene);
     }
 
-    public boolean show(){
+    @Override
+    public Boolean show(){
         window.showAndWait();
 
-        return answer;
+        return var;
     }
 }

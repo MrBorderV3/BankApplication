@@ -9,24 +9,23 @@ public class ButtonBuilder {
 
     private String buttonName;
     private EventHandler<ActionEvent> eventHandler;
-    private int[] constraints = new int[2];
+    private int[] constraints;
 
     public ButtonBuilder(){
     }
 
     public ButtonBuilder(String name){
-        this.buttonName = name;
+        setButtonName(name);
     }
 
     public ButtonBuilder(String name, EventHandler<ActionEvent> value){
         this(name);
-        this.eventHandler = value;
+        setOnAction(value);
     }
 
     public ButtonBuilder(String name, EventHandler<ActionEvent> value, int column, int row){
         this(name, value);
-        constraints[0] = column;
-        constraints[1] = row;
+        setConstraints(new int[]{column, row});
     }
 
     public void setButtonName(String buttonName) {
@@ -35,6 +34,10 @@ public class ButtonBuilder {
 
     public void setOnAction(EventHandler<ActionEvent> value){
         this.eventHandler = value;
+    }
+
+    public void setConstraints(int[] constraints){
+        this.constraints = constraints;
     }
 
     public Button build(){

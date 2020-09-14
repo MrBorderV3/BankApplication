@@ -23,10 +23,12 @@ public class AccountReader {
             AccountFile accountFile = new AccountFile(id, new File("C:\\Users\\בית\\Desktop\\code\\Java\\BankApplication\\accounts"));
             accountFile.setup();
 
+
             String name = (String) accountFile.get("Name");
             String password = decryptor.decrypt((String) accountFile.get("Password"));
             double balance = (double) accountFile.get("Balance");
             Account account = new CustomerAccount(name, id, password, balance);
+            AccountsManager.accountMap.put(id, account);
 
             for (int i = 1; true; i++) {
                 String path = "Transactions." + i + ".";
@@ -44,7 +46,7 @@ public class AccountReader {
                             readAccount(senderId);
                         }
 
-                        Account senderAccount = AccountsManager.accountMap.get(id);
+                        Account senderAccount = AccountsManager.accountMap.get(senderId );
                         Transaction transaction = new ReceiveTransaction(account, senderAccount, amount, date, after, prior);
                         account.addTransaction(transaction);
 
@@ -54,7 +56,7 @@ public class AccountReader {
                             readAccount(receiverId);
                         }
 
-                        Account receiverAccount = AccountsManager.accountMap.get(id);
+                        Account receiverAccount = AccountsManager.accountMap.get(receiverId);
                         Transaction transaction = new SendTransaction(account, receiverAccount, amount, date, after, prior);
                         account.addTransaction(transaction);
 
@@ -66,8 +68,6 @@ public class AccountReader {
                         Transaction transaction = new WithdrawTransaction(account, amount, date, after, prior);
                         account.addTransaction(transaction);
                     }
-
-                    i++;
                 } catch (NullPointerException e){
                     break;
                 }

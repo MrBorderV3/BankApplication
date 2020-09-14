@@ -1,6 +1,6 @@
 package me.border.bankapplication.account;
 
-import me.border.bankapplication.utils.LoginResponse;
+import me.border.utilities.utils.ImmuteableResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;
@@ -12,9 +12,9 @@ public class AccountsManager {
     public static List<String> nameList = new ArrayList<>();
     private static List<AccountComparator> comparators = new ArrayList<>();
 
-    public static LoginResponse login(String id, String password){
+    public static ImmuteableResponse<Account> login(String id, String password){
         if (id.length() != 6 || password.length() <= 5 || password.contains("\\") || password.contains(" ") || password.contains("%") || password.contains("$")) {
-            return new LoginResponse(false);
+            return new ImmuteableResponse<>(false);
         }
 
         if (accountMap.containsKey(id)){
@@ -27,9 +27,9 @@ public class AccountsManager {
                 }
             }
 
-            return new LoginResponse(equals, account);
+            return new ImmuteableResponse<>(equals, account);
         } else {
-            return new LoginResponse(false);
+            return new ImmuteableResponse<>(false);
         }
     }
 
@@ -49,14 +49,23 @@ public class AccountsManager {
         return account;
     }
 
-    public static Account getAccount(String id){
-        return accountMap.get(id);
+    public static ImmuteableResponse<Account> getAccount(String id){
+        if (!accountMap.containsKey(id)){
+            return new ImmuteableResponse<>(false);
+        }
+
+        return new ImmuteableResponse<>(true, accountMap.get(id));
     }
 
     private static boolean isTaskRunning = false;
 
     private static void initWriterTask() {
         isTaskRunning = true;
+        if (comparators.isEmpty()){
+            for (Account account : accountMap.values()){
+                comparators.add(account.getComparator());
+            }
+        }
         AccountWriter accountWriter = new AccountWriter();
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
